@@ -22,12 +22,18 @@ from pydantic import (
     UrlConstraints,
     ValidationError,
 )
-from pydantic.networks import validate_email
+from pydantic.networks import import_email_validator, validate_email
 
 try:
     import email_validator
 except ImportError:
     email_validator = None
+
+
+@pytest.mark.skipif(email_validator is not None, reason='tests for behavior when `email_validator` is not installed')
+def test_import_email_validator_error():
+    with pytest.raises(ImportError, match=r'email-validator is not installed, run `pip install pydantic\[email\]`'):
+        import_email_validator()
 
 
 @pytest.mark.parametrize(
