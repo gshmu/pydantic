@@ -851,7 +851,7 @@ class BaseModel(Representation, metaclass=ModelMetaclass):
         value_include = ValueItems(self, include) if include is not None else None
 
         for field_key, v in self.__dict__.items():
-            if (allowed_keys is not None and field_key not in allowed_keys) or (exclude_none and v is None):
+            if (allowed_keys is not None and field_key not in allowed_keys) or (exclude_none and v is None and not (field_key == "default" and self.type != 'None')):
                 continue
 
             if exclude_defaults:
