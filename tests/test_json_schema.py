@@ -4147,3 +4147,20 @@ def test_get_json_schema_gets_called_if_schema_is_replaced() -> None:
 
     # insert_assert(js_schema)
     assert js_schema == {'type': 'string', 'minLength': 1}
+
+
+def test_type_adapter_json_schemas_title_description():
+    class Model(BaseModel):
+        a: str
+
+    _, json_schema = TypeAdapter.json_schemas([(Model, 'validation', TypeAdapter(Model))])
+    assert 'title' not in json_schema
+    assert 'description' not in json_schema
+
+    _, json_schema = TypeAdapter.json_schemas(
+        [(Model, 'validation', TypeAdapter(Model))],
+        title='test title',
+        description='test description',
+    )
+    assert json_schema['title'] == 'test title'
+    assert json_schema['description'] == 'test description'
